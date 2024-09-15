@@ -9,7 +9,7 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final goRouter = GoRouter.of(context);
-    // print(AppEnv().apiUrl);
+    print("AppENV ==> ${AppEnv().apiUrl}");
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard Page'),

@@ -3,7 +3,7 @@ import 'package:app_setup/env/dev_env.dart';
 import 'package:app_setup/env/prod_env.dart';
 import 'package:app_setup/env/staging_env.dart';
 
-abstract interface class AppEnv implements AppEnvFields {
+abstract class AppEnv implements AppEnvFields {
   static const String? appFlavor =
       String.fromEnvironment("FLUTTER_APP_FLAVOR") != ""
           ? String.fromEnvironment("FLUTTER_APP_FLAVOR")
@@ -17,5 +17,5 @@ abstract interface class AppEnv implements AppEnvFields {
           ? StagingEnv()
           : appFlavor == 'prod'
               ? ProdEnv()
-              : throw Exception('Invalid app flavor');
+              : DevEnv(); // throw Exception('Invalid app flavor');
 }
