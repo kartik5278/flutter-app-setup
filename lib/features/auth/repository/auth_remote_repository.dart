@@ -1,39 +1,54 @@
+import 'dart:convert';
+
 import 'package:app_setup/core/failure/app_failure.dart';
+import 'package:app_setup/core/models/user_model.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'auth_remote_repository.g.dart';
+
+@riverpod
+AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref) {
+  return AuthRemoteRepository();
+}
+
+final Map<String, dynamic> response = {
+  "body": {
+    "user": {
+      "id": -1,
+      "displayName": 'My Name',
+      "email": 'My Email',
+    },
+    "token": 'some-updated-secret-auth-token',
+  },
+  "statusCode": 200
+};
 
 class AuthRemoteRepository {
-  // Future<Either<AppFailure, dynamic>> login({
-  //   required String email,
-  //   required String password,
-  // }) async {
-  //   try {
-  //     final response = await http.post(
-  //       Uri.parse(
-  //         '${ServerConstant.serverURL}/auth/login',
-  //       ),
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: jsonEncode(
-  //         {
-  //           'email': email,
-  //           'password': password,
-  //         },
-  //       ),
-  //     );
-  //     final resBodyMap = jsonDecode(response.body) as Map<String, dynamic>;
+  Future<Either<AppFailure, dynamic>> login({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final resBodyMap = jsonDecode(response["body"]) as Map<String, dynamic>;
 
-  //     if (response.statusCode != 200) {
-  //       return Left(AppFailure(resBodyMap['detail']));
-  //     }
+      // API CALL
+      final result = await Future.delayed(
+        const Duration(seconds: 2),
+        () => resBodyMap,
+      );
 
-  //     return Right(
-  //       UserModel.fromMap(resBodyMap['user']).copyWith(
-  //         token: resBodyMap['token'],
-  //       ),
-  //     );
-  //   } catch (e) {
-  //     return Left(AppFailure(e.toString()));
-  //   }
-  // }
+      if (result["statusCode"] != 200) {
+        return Left(AppFailure(resBodyMap['detail']));
+      }
+
+      return Right(
+        UserModel.fromMap(result['user']).copyWith(
+          token: result['token'],
+        ),
+      );
+    } catch (e) {
+      return Left(AppFailure(e.toString()));
+    }
+  }
 }
