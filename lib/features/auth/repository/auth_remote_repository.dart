@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auth_remote_repository.g.dart';
 
-@riverpod
+@Riverpod(keepAlive: true)
 AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref) {
   return AuthRemoteRepository();
 }
@@ -15,11 +15,11 @@ AuthRemoteRepository authRemoteRepository(AuthRemoteRepositoryRef ref) {
 final Map<String, dynamic> response = {
   "body": {
     "user": {
-      "id": -1,
-      "displayName": 'My Name',
+      "id": "1",
+      "name": 'My Name',
       "email": 'My Email',
+      "token": 'some-updated-secret-auth-token',
     },
-    "token": 'some-updated-secret-auth-token',
   },
   "statusCode": 200
 };
@@ -30,22 +30,21 @@ class AuthRemoteRepository {
     required String password,
   }) async {
     try {
-      final resBodyMap = jsonDecode(response["body"]) as Map<String, dynamic>;
+      final resBodyMap = response["body"];
 
       // API CALL
       final result = await Future.delayed(
         const Duration(seconds: 2),
         () => resBodyMap,
       );
+      print("res===>$result ${response["statusCode"]}");
 
-      if (result["statusCode"] != 200) {
+      if (response["statusCode"] != 200) {
         return Left(AppFailure(resBodyMap['detail']));
       }
 
       return Right(
-        UserModel.fromMap(result['user']).copyWith(
-          token: result['token'],
-        ),
+        UserModel.fromMap(result['user']),
       );
     } catch (e) {
       return Left(AppFailure(e.toString()));

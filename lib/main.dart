@@ -1,13 +1,24 @@
-import 'package:app_setup/utils/state_logger.dart';
+import 'package:app_setup/features/auth/repository/auth_local_repository.dart';
+// import 'package:app_setup/utils/state_logger.dart';
 import 'package:flutter/material.dart';
+// import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'router/router.dart';
+// import 'package:path_provider/path_provider.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  // final dir = await getApplicationDocumentsDirectory();
+  await Hive.initFlutter();
+  final container = ProviderContainer();
+
+  // Initialize Hive through the repository
+  await container.read(authLocalRepositoryProvider).init();
+
   runApp(
-    ProviderScope(
-      observers: [StateLogger()],
-      child: const App(),
+    const ProviderScope(
+      child: App(),
     ),
   );
 }

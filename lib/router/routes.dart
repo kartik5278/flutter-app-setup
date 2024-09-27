@@ -1,4 +1,5 @@
 import 'package:app_setup/features/auth/view/screens/login_screen.dart';
+import 'package:app_setup/features/auth/view/screens/splash_screen.dart';
 import 'package:app_setup/features/dashboard/view/screens/dashboard_screen.dart';
 import 'package:app_setup/features/dashboard/view/screens/discover_screen.dart';
 import 'package:app_setup/features/settings/view/screens/settings_screen.dart';
@@ -10,6 +11,14 @@ final List<GoRoute> authRoutes = [
     pageBuilder: (context, state) {
       return const NoTransitionPage(
         child: LoginScreen(),
+      );
+    },
+  ),
+  GoRoute(
+    path: '/splash',
+    pageBuilder: (context, state) {
+      return const NoTransitionPage(
+        child: SplashScreen(),
       );
     },
   )
